@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Assignment5
 {
@@ -9,39 +10,69 @@ namespace Assignment5
             Console.WriteLine("Welcome to the Adventure of Assignment 5!");
 
             Character hero = new Character("Bob", RaceCategory.Human, 100);
+            Inventory inventory = new Inventory(8);
+            Item bronzeSword = new Item("Bronze Sword", 5, ItemGroup.Equipment);
+            Item smallHealthPotion = new Item("Small Health Potion", 10, ItemGroup.Consumable);
+            Item fragileKey = new Item("Fragile Key", 1, ItemGroup.Key);
 
-            Console.WriteLine("{0} has entered the forest", hero.Name);
+            inventory.AddItem(bronzeSword);
+            Console.WriteLine($"{hero.Name} has found a {bronzeSword.Name}");
+
+            Console.WriteLine($"{hero.Name} has entered the forest");
 
             string monster = "goblin";
             int damage = 10;
 
-            Console.WriteLine("A {0} appeared and attacks {1}", monster, hero.Name);
-
-            Console.WriteLine("{0} takes {1} damage", hero.Name, damage);
+            Console.WriteLine($"A {monster} appeared and attacks {hero.Name}");
+            Console.WriteLine($"{hero.Name} takes {damage} damage");
 
             hero.TakeDamage(damage);
             Console.WriteLine(hero);
 
-            Console.WriteLine("{0} flees from the enemy", hero.Name);
+            Console.WriteLine($"{hero.Name} flees from the enemy");
 
-            string item = "small health potion";
-            int restoreAmount = 10;
+            Console.WriteLine($"{hero.Name} finds a {smallHealthPotion.Name}");
+            inventory.AddItem(smallHealthPotion);
 
-            Console.WriteLine("{0} find a {1} and drinks it", hero.Name, item);
-
-            Console.WriteLine("{0} restores {1} health", hero.Name, restoreAmount);
-
-            hero.RestoreHealth(restoreAmount);
-
+            if (inventory.TakeItem(smallHealthPotion))
+            {
+                hero.RestoreHealth(smallHealthPotion.Amount);
+                Console.WriteLine($"{hero.Name} drinks {smallHealthPotion.Name} and restores {smallHealthPotion.Amount} health.");
+            }
             Console.WriteLine(hero);
+
+            Console.WriteLine($"{hero.Name} finds a {smallHealthPotion.Name} and {fragileKey.Name}.");
+            inventory.AddItem(smallHealthPotion);
+            inventory.AddItem(fragileKey);
 
             if (hero.IsAlive)
             {
-                Console.WriteLine("Congratulations! {0} survived.", hero.Name);
+                Console.WriteLine($"Congratulations! {hero.Name} survived.");
+
+                string loot = "";
+
+                List<Item> inventoryList = inventory.ListAllItems();
+                for (int i = 0; i < inventoryList.Count; ++i)
+                {
+                    if (i == 0)
+                    {
+                        loot += $"{inventoryList[i].Name}";
+                    }
+                    else if (i == inventoryList.Count - 1)
+                    {
+                        loot += $", and {inventoryList[i].Name}";
+                    }
+                    else
+                    {
+                        loot += $", {inventoryList[i].Name}";
+                    }
+                }
+
+                Console.WriteLine($"Your total loot was {loot}.");
             }
             else
             {
-                Console.WriteLine("{0} has died.", hero.Name);
+                Console.WriteLine($"{hero.Name} has died.");
             }
         }
     }
